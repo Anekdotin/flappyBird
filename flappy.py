@@ -3,6 +3,9 @@ from random import randint
 
 
 pygame.init()
+
+
+
 white = (255,255,255)
 black = (0,0,0)
 
@@ -63,19 +66,27 @@ def gameover():
 
 def obstacle(xloc, yloc, xsize, ysize):
     pygame.draw.rect(gameDisplay, green, [xloc, yloc, xsize, ysize])
-    pygame.draw.rect(gameDisplay, green, [xloc, int(yloc+xsize+space), xsize, 500])
+    pygame.draw.rect(gameDisplay, green, [xloc, int(yloc+ysize+space), xsize, ysize+500])
 
-x = 250
+def Score(score):
+    message_to_screen(("score: "+str(score)), black,  -12)
+
+
+
+
+
+x = 350
 y = 250
 x_speed = 0
 y_speed = 0
-ground = 500
-xloc = 700
+ground = 600
+xloc = 800
 yloc = 0
-xsize =  50
-ysize = randint(0, 360)
-space = 100
+xsize = 80
+ysize = randint(200, 550)
+space = 220
 obspeed = 2.5
+score = 0
 
 
 
@@ -95,17 +106,44 @@ while not done:
                 if event.key == pygame.K_UP:
                     y_speed = 5
 
+
     gameDisplay.fill(white)
     obstacle(xloc,yloc,xsize,ysize)
     ball(x, y)
+    Score(score)
 
     y += y_speed
     xloc -= obspeed
 
     if y > ground:
         gameover()
-        y_speed=0
+        y_speed = 0
+        obspeed = 0
 
+    if xloc < -80:
+        xloc = 800
+        ysize = randint(100,450)
+
+    if x+20 > xloc and y < ysize and x-15 < xsize + xloc:
+        gameover()
+        obspeed = 0
+        y_speed = 0
+
+    if x+20 > xloc and y < ysize + space and x-15 < xsize + xloc:
+        gameover()
+        obspeed = 0
+        y_speed = 0
+
+    if x > xloc and x < xloc+3:
+        score = (score+1)
+
+
+    else:
+        y += y_speed
+        xloc -= obspeed
+
+    if x >xloc and x < xloc+3:
+        score = (score + 1)
 
     pygame.display.flip()
     clock.tick(60)
